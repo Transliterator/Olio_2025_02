@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Olive Oil Imports - Ukraine</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f3e7; /* beige background */
+      padding: 2rem;
+      color: #333;
+    }
+    h2 {
+      font-size: 1.4rem;
+      font-weight: normal;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .chart-container {
+      flex: 1 1 400px;
+    }
+    .text-container {
+      flex: 1 1 300px;
+      font-size: 0.95rem;
+      max-width: 400px;
+    }
+    canvas {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h2>Growth of Olive Oil Imports from Italy to Ukraine (Jan–Feb 2023–2025)</h2>
+  <div class="container">
+    <div class="chart-container">
+      <canvas id="importChart"></canvas>
+    </div>
+    <div class="text-container">
+      <p>
+        From January to February 2025, olive oil imports to Ukraine from Italy grew by 3% compared to the same period in 2024, reaching €0.7 million.<br>
+        Total olive oil imports from all countries decreased by 11%, amounting to €1.7 million.<br>
+        Italy remains the top supplier with a 41% market share, followed by Spain (35%) and Greece (28%).<br>
+        Source: Trade Data Monitor
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('importChart').getContext('2d');
+
+    const data = {
+      labels: ['2023', '2024', '2025'],
+      datasets: [
+        {
+          label: 'Total Imports (World)',
+          data: [0, 0, 0],
+          backgroundColor: '#b7c59e' // muted green
+        },
+        {
+          label: 'Imports from Italy',
+          data: [0, 0, 0],
+          backgroundColor: '#6d8b5b' // olive green
+        }
+      ]
+    };
+
+    const options = {
+      responsive: true,
+      animation: {
+        duration: 1000,
+        easing: 'easeOutBounce'
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return value.toLocaleString('en-EN') + ' €';
+            }
+          }
+        }
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.dataset.label + ': ' + context.parsed.y.toLocaleString('en-EN') + ' €';
+            }
+          }
+        }
+      }
+    };
+
+    const importChart = new Chart(ctx, {
+      type: 'bar',
+      data: data,
+      options: options
+    });
+
+    const realData = {
+      world: [1110380, 1952815, 1730981],
+      italy: [437957, 685878, 704632]
+    };
+
+    function animateLoop() {
+      data.datasets[0].data = [0, 0, 0];
+      data.datasets[1].data = [0, 0, 0];
+      importChart.update();
+
+      setTimeout(() => {
+        data.datasets[0].data[0] = realData.world[0];
+        data.datasets[1].data[0] = realData.italy[0];
+        importChart.update();
+      }, 1000);
+
+      setTimeout(() => {
+        data.datasets[0].data[1] = realData.world[1];
+        data.datasets[1].data[1] = realData.italy[1];
+        importChart.update();
+      }, 2200);
+
+      setTimeout(() => {
+        data.datasets[0].data[2] = realData.world[2];
+        data.datasets[1].data[2] = realData.italy[2];
+        importChart.update();
+      }, 3400);
+
+      setTimeout(() => animateLoop(), 6000); // repeat every 6 seconds
+    }
+
+    animateLoop();
+  </script>
+</body>
+</html>
